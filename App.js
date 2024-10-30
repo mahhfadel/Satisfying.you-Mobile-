@@ -5,7 +5,6 @@ import { ActivityIndicator, StyleSheet } from 'react-native';
 
 import { useFonts } from 'expo-font';
 
-// Importar as telas
 import NewSurvey from './src/screens/NewSurvey';
 import EditSurvey from './src/screens/EditSurvey';
 
@@ -17,7 +16,6 @@ export default function App() {
   });
 
   if (!fontsLoaded) {
-    // Mostra um indicador de carregamento enquanto a fonte carrega
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
 
@@ -54,10 +52,4 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
 });
