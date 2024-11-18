@@ -36,15 +36,17 @@ export default function App() {
       }}
     >
       <Stack.Screen
-        name="NewSurvey"
-        component={NewSurvey}
-        options={{ title: 'Nova Pesquisa', headerTitleStyle: { fontFamily: 'AveriaLibre-Regular', color: '#fff',}}}
-      />
-      <Stack.Screen
         name="EditSurvey"
         component={EditSurvey}
         options={{ title: 'Modificar Pesquisa', headerTitleStyle: { fontFamily: 'AveriaLibre-Regular', color: '#fff',}}}
       />
+      
+      <Stack.Screen
+        name="NewSurvey"
+        component={NewSurvey}
+        options={{ title: 'Nova Pesquisa', headerTitleStyle: { fontFamily: 'AveriaLibre-Regular', color: '#fff',}}}
+      />
+      
     </Stack.Navigator>
   </NavigationContainer>
 );

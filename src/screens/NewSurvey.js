@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   inputContainer: {
-    width: '80%',
+    width: '60%',
     margin: 'auto'
   },
   button: {
