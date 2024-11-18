@@ -2,23 +2,10 @@ import { SafeAreaView, StyleSheet, Text, Image, View } from "react-native";
 import React, { useState } from "react";
 
 export default function Coleta() {
-  const [name, onChangeName] = React.useState("");
-  const [nameError, setNameError] = React.useState(false);
-
-  const [date, onChangeDate] = React.useState("");
-  const [dateError, setDateError] = React.useState(false);
-
-  const [imageUri, setImageUri] = React.useState(null);
-  const [message, setMessage] = useState(""); // Estado para controlar a mensagem
   const [showMessage, setShowMessage] = useState(false); // Estado para controlar a exibição da mensagem
 
   // Função chamada ao clicar em uma opção de voto
   const handleVote = (vote) => {
-    setMessage(
-      `Obrigada por participar da pesquisa! 
-      
-Aguardamos você no proximo ano!`
-    );
     setShowMessage(true);
 
     // Depois de 3 segundos, esconder a mensagem
@@ -32,10 +19,13 @@ Aguardamos você no proximo ano!`
       <SafeAreaView>
         <Text style={styles.text}>O que você achou do carnaval 2024?</Text>
 
-        {/* Exibe a mensagem quando showMessage for true */}
         {showMessage && (
           <View style={styles.messageContainer}>
-            <Text style={styles.messageText}>{message}</Text>
+            <Text style={styles.messageText}>
+              Obrigada por participar da pesquisa!{"\n"}
+              {"\n"}
+              Aguardamos você no proximo ano!
+            </Text>
           </View>
         )}
 
