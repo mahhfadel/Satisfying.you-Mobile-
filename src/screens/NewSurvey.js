@@ -1,8 +1,9 @@
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import CustomInput from '../components/CustomInput'
 import ImagePickerInput from '../components/ImagePickerInput';
+import { ScrollView } from 'react-native-gesture-handler';
 
 export default function NewSurvey() {
   const [name, onChangeName] = React.useState('');
@@ -10,24 +11,56 @@ export default function NewSurvey() {
 
   const [date, onChangeDate] = React.useState('');
   const [dateError, setDateError] = React.useState(false);
+  const [dateErrorMessage, setDateErrorMessage] = React.useState('Preencha a data');
 
   const [imageUri, setImageUri] = React.useState(null);
 
+  const handleClick = () => {
+    if(name === ''){
+      setNameError(true);
+    }
+
+    if(date === ''){
+      setDateErrorMessage('Preencha a data');
+      setDateError(true);
+    }
+  }
+
+  useEffect(() => {
+    if(name !== ''){
+      setNameError(false);
+    }
+  }, [name]);
+
+  useEffect(() => {
+    if(date !== ''){
+      const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
+      
+      if(dateRegex.test(date) === false){
+        setDateErrorMessage('Formato de data inválido (DD/MM/AAAA)');
+        setDateError(true);
+        return;
+      }   
+
+      setDateError(false);
+    }
+  }, [date]);
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <SafeAreaView>
         <View style={styles.inputContainer}>
           <CustomInput label='Nome' value={name} onChangeText={onChangeName} err={nameError} errorMessage='Preencha o nome da pesquisa'/>
-          <CustomInput label='Data' value={date} onChangeText={onChangeDate} err={dateError} showDatePicker={true} errorMessage='Preencha a data'/>
+          <CustomInput label='Data' value={date} onChangeText={onChangeDate} err={dateError} showDatePicker={true} errorMessage={dateErrorMessage}/>
           <ImagePickerInput label="Imagem" image={imageUri} setImage={setImageUri}/>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={handleClick}>
             <Text style={styles.text}>
               Cadastrar
             </Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
-    </View>
+    </ScrollView>
   )
 }
 
@@ -45,7 +78,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#37BD6D',
     padding: 8,
-    marginTop: 16
+    marginTop: 8
   },
   text: {
     fontFamily: 'AveriaLibre-Regular',

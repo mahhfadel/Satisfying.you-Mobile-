@@ -23,6 +23,50 @@ export default function NewSurvey() {
 
   const [imageUri, setImageUri] = React.useState(null);
 
+  const handleSave = () => {
+    if(name === ''){
+      setNameError(true);
+    }
+
+    if(date === ''){
+      setDateErrorMessage('Preencha a data');
+      setDateError(true);
+    }
+  }
+
+  useEffect(() => {
+    if(name !== ''){
+      setNameError(false);
+    }
+  }, [name]);
+
+  useEffect(() => {
+    if(date !== ''){
+      const dateRegex = /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/;
+      
+      if(dateRegex.test(date) === false){
+        setDateErrorMessage('Formato de data inválido (DD/MM/AAAA)');
+        setDateError(true);
+        return;
+      }   
+
+      setDateError(false);
+    }
+  }, [date]);
+
+
+  useEffect(() => {
+    if(name !== ''){
+      setNameError(false);
+    }
+  }, [name]);
+
+  useEffect(() => {
+    if(date !== ''){
+      setDateError(false);
+    }
+  }, [date]);
+
   return (
     <View style={styles.container}>
       <SafeAreaView>
@@ -30,7 +74,7 @@ export default function NewSurvey() {
           <CustomInput label='Nome' value={name} onChangeText={onChangeName} err={nameError} errorMessage='Preencha o nome da pesquisa'/>
           <CustomInput label='Data' value={date} onChangeText={onChangeDate} err={dateError} showDatePicker={true} errorMessage='Preencha a data'/>
           <ImagePickerInput label="Imagem" image={imageUri} setImage={setImageUri}/>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={handleSave}>
             <Text style={styles.text}>
               Cadastrar
             </Text>

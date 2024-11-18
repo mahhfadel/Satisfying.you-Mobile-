@@ -7,6 +7,7 @@ import { useFonts } from 'expo-font';
 
 import NewSurvey from './src/screens/NewSurvey';
 import EditSurvey from './src/screens/EditSurvey';
+import RecoverPassword from './src/screens/RecoverPassword';
 
 const Stack = createStackNavigator();
 
@@ -35,18 +36,18 @@ export default function App() {
         headerBackTitleVisible: false,
       }}
     >
-      <Stack.Screen
-        name="EditSurvey"
-        component={EditSurvey}
-        options={{ title: 'Modificar Pesquisa', headerTitleStyle: { fontFamily: 'AveriaLibre-Regular', color: '#fff',}}}
-      />
-      
+      <Stack.Screen name="RecoverPassword" component={RecoverPassword} options={{title: 'Recuperação de senha', headerTitleStyle: {fontFamily: 'AveriaLibre-Regular', color: '#fff'}}}/>
       <Stack.Screen
         name="NewSurvey"
         component={NewSurvey}
         options={{ title: 'Nova Pesquisa', headerTitleStyle: { fontFamily: 'AveriaLibre-Regular', color: '#fff',}}}
       />
-      
+      <Stack.Screen
+        name="EditSurvey"
+        component={EditSurvey}
+        options={{ title: 'Modificar Pesquisa', headerTitleStyle: { fontFamily: 'AveriaLibre-Regular', color: '#fff',}}}
+      />
+
     </Stack.Navigator>
   </NavigationContainer>
 );
