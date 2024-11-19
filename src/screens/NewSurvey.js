@@ -1,14 +1,15 @@
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useContext } from 'react'
 
 import CustomInput from '../components/CustomInput'
 import ImagePickerInput from '../components/ImagePickerInput';
 import { ScrollView } from 'react-native-gesture-handler';
 
 import { useNavigation } from '@react-navigation/native';
+import { SurveyContext } from '../context/SurveyContext';
 
-export default function NewSurvey(props) {
-  const navigation = useNavigation();
+export default function NewSurvey({ navigation }) {
+  const { surveys, setSurveys } = useContext(SurveyContext);
 
   const [name, onChangeName] = React.useState('');
   const [nameError, setNameError] = React.useState(false);
@@ -20,15 +21,31 @@ export default function NewSurvey(props) {
   const [imageUri, setImageUri] = React.useState(null);
 
   const handleClick = () => {
-    if(name === ''){
+    if (name === "") {
       setNameError(true);
+    } else {
+      setNameError(false);
     }
-
-    if(date === ''){
-      setDateErrorMessage('Preencha a data');
+  
+    if (date === "") {
+      setDateErrorMessage("Preencha a data");
       setDateError(true);
+    } else {
+      setDateError(false);
     }
 
+    if(dateError || nameError){
+      return;
+    }
+
+    const id = surveys[surveys.length - 1].id + 1;
+  
+    setSurveys((prevSurveys) => [
+      ...prevSurveys,
+      { id, title: name, date, uri: imageUri }
+    ]);
+
+    navigation.navigate('Home');
   }
 
   useEffect(() => {

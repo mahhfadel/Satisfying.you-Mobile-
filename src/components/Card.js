@@ -4,17 +4,28 @@ import React from 'react'
 
 import { vw, vh } from 'react-native-expo-viewport-units';
 
-const Card = ({ uri, title, date }) => {
-  const navigation = useNavigation();
-
-  return (
-    <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('EditSurvey', {pTitle: title, pDate: date, pUri: uri})}>
-      <Image source={{ uri }} style={styles.image} />
-      <Text style={styles.title} numberOfLines={1}>{title}</Text>
-      <Text style={styles.date}>{date}</Text>
-    </TouchableOpacity>
-  )
-}
+const Card = ({ id, title, date, uri }) => {
+    const navigation = useNavigation();
+  
+    return (
+      <TouchableOpacity
+        style={styles.container}
+        onPress={() =>
+          navigation.navigate('EditSurvey', {
+            id,
+            pTitle: title,
+            pDate: date,
+            pUri: uri,
+          })
+        }
+      >
+        <Image source={{ uri }} style={styles.image} />
+        <Text style={styles.title} numberOfLines={1}>{title}</Text>
+        <Text style={styles.date}>{date}</Text>
+      </TouchableOpacity>
+    );
+  };
+  
 
 export default Card
 
@@ -38,7 +49,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#3F92C5',
     whiteSpace: 'nowrap',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    textTransform: 'uppercase'
   },
   date: {
     fontFamily: 'AveriaLibre-Regular',

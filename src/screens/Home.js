@@ -1,14 +1,17 @@
 import { SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Card from '../components/Card';
 
 import { vw, vh } from 'react-native-expo-viewport-units';
+import { SurveyContext } from '../context/SurveyContext';
 
 const Home = ({ navigation }) => {
   const [ filter, setFilter ] = useState('');
 
+  const { surveys, setSurveys } = useContext(SurveyContext);
+  
   return (
     <View style={styles.container}>
       <View style={styles.inputContainer}>
@@ -19,19 +22,7 @@ const Home = ({ navigation }) => {
       </View>
       <View style={styles.carrousselContainer}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.carrousselContent}>
-          <Card uri='https://www.designi.com.br/images/preview/10073442.jpg' title='111111111111111111111111111111111111111111111111111111' date='22/10/2020'/>
-          <Card uri='https://www.designi.com.br/images/preview/10073442.jpg' title='1' date='22/10/2020'/>
-          <Card uri='https://www.designi.com.br/images/preview/10073442.jpg' title='1' date='22/10/2020'/>
-          <Card uri='https://www.designi.com.br/images/preview/10073442.jpg' title='1' date='22/10/2020'/>
-          <Card uri='https://www.designi.com.br/images/preview/10073442.jpg' title='1' date='22/10/2020'/>
-          <Card uri='https://www.designi.com.br/images/preview/10073442.jpg' title='1' date='22/10/2020'/>
-          <Card uri='https://www.designi.com.br/images/preview/10073442.jpg' title='1' date='22/10/2020'/>
-          <Card uri='https://www.designi.com.br/images/preview/10073442.jpg' title='1' date='22/10/2020'/>
-          <Card uri='https://www.designi.com.br/images/preview/10073442.jpg' title='1' date='22/10/2020'/>
-          <Card uri='https://www.designi.com.br/images/preview/10073442.jpg' title='1' date='22/10/2020'/>
-          <Card uri='https://www.designi.com.br/images/preview/10073442.jpg' title='1' date='22/10/2020'/>
-          <Card uri='https://www.designi.com.br/images/preview/10073442.jpg' title='1' date='22/10/2020'/>
-          <Card uri='https://www.designi.com.br/images/preview/10073442.jpg' title='1' date='22/10/2020'/>
+          { surveys && surveys.map((s) => <Card {...s} key={s.id} />)}
 
         </ScrollView>
       </View>

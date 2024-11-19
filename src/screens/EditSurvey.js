@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 
 import AntDesign from "@expo/vector-icons/AntDesign";
 
@@ -14,15 +14,18 @@ import CustomInput from "../components/CustomInput";
 import ImagePickerInput from "../components/ImagePickerInput";
 
 import Modal from "react-native-modal";
+import { SurveyContext } from "../context/SurveyContext";
 
 export default function NewSurvey({ route, navigation }) {
   const [isModalVisible, setModalVisible] = useState(false);
+
+  const { surveys, setSurveys } = useContext(SurveyContext);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
 
-  const { pTitle, pDate, pUri } = route.params || {};
+  const { id, pTitle, pDate, pUri } = route.params || {};
 
   const [name, onChangeName] = React.useState(pTitle);
   const [nameError, setNameError] = React.useState(false);
@@ -36,13 +39,38 @@ export default function NewSurvey({ route, navigation }) {
   const handleSave = () => {
     if (name === "") {
       setNameError(true);
+    } else {
+      setNameError(false);
     }
-
+  
     if (date === "") {
       setDateErrorMessage("Preencha a data");
       setDateError(true);
+    } else {
+      setDateError(false);
     }
+  
+    if (nameError || dateError) {
+      return;
+    }
+  
+    setSurveys((prevSurveys) => 
+      prevSurveys.map((survey) =>
+        survey.id === id ? { ...survey, title: name, date, uri: imageUri } : survey
+      )
+    );
+  
+    navigation.goBack();
   };
+
+  const deleteSurvey = () => {
+    setSurveys((prevSurveys) => 
+      prevSurveys.filter(s => s.id !== id)
+    );
+  
+    navigation.goBack();
+  }
+  
 
   useEffect(() => {
     if (name !== "") {
@@ -118,7 +146,7 @@ export default function NewSurvey({ route, navigation }) {
             <View style={styles.buttonRow}>
               <TouchableOpacity
                 style={[styles.modalButton, styles.removeButton]}
-                onPress={toggleModal}
+                onPress={() => { toggleModal(); deleteSurvey(); }}
               >
                 <Text style={styles.modalButtonText}>Sim</Text>
               </TouchableOpacity>
