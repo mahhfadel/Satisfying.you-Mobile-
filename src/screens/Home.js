@@ -1,5 +1,5 @@
 import { SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Card from '../components/Card';
@@ -11,6 +11,17 @@ const Home = ({ navigation }) => {
   const [ filter, setFilter ] = useState('');
 
   const { surveys, setSurveys } = useContext(SurveyContext);
+
+  const [ filteredSurveys, setFilteredSurveys ] = useState(surveys);
+
+  useEffect(() => {
+    if(filter === ''){
+      setFilteredSurveys(surveys);
+      return;
+    }
+
+    setFilteredSurveys(surveys.filter(s => s.title.toLowerCase().includes(filter.toLowerCase())));
+  }, [filter, surveys])
   
   return (
     <View style={styles.container}>
@@ -22,7 +33,7 @@ const Home = ({ navigation }) => {
       </View>
       <View style={styles.carrousselContainer}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.carrousselContent}>
-          { surveys && surveys.map((s) => <Card {...s} key={s.id} />)}
+          { surveys && filteredSurveys.map((s) => <Card {...s} key={s.id} />)}
 
         </ScrollView>
       </View>
