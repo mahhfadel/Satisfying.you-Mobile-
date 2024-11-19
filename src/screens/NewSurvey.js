@@ -5,7 +5,11 @@ import CustomInput from '../components/CustomInput'
 import ImagePickerInput from '../components/ImagePickerInput';
 import { ScrollView } from 'react-native-gesture-handler';
 
-export default function NewSurvey() {
+import { useNavigation } from '@react-navigation/native';
+
+export default function NewSurvey(props) {
+  const navigation = useNavigation();
+
   const [name, onChangeName] = React.useState('');
   const [nameError, setNameError] = React.useState(false);
 
@@ -24,6 +28,7 @@ export default function NewSurvey() {
       setDateErrorMessage('Preencha a data');
       setDateError(true);
     }
+
   }
 
   useEffect(() => {
@@ -67,7 +72,7 @@ export default function NewSurvey() {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#573FBA',
-    flex: 1
+    flex: 1,
   },
   inputContainer: {
     width: '60%',
@@ -83,6 +88,7 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: 'AveriaLibre-Regular',
     color: '#fff',
-    fontSize: 16
+    fontSize: 16,
+    textTransform: 'uppercase'
   }
 })

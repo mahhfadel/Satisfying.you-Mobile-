@@ -1,13 +1,16 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { ActivityIndicator, StyleSheet } from 'react-native';
+import { ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 
 import { useFonts } from 'expo-font';
 
 import NewSurvey from './src/screens/NewSurvey';
 import EditSurvey from './src/screens/EditSurvey';
 import RecoverPassword from './src/screens/RecoverPassword';
+import Drawer from './src/screens/Drawer';
+
+import { Ionicons } from '@expo/vector-icons';
 
 const Stack = createStackNavigator();
 
@@ -36,6 +39,9 @@ export default function App() {
         headerBackTitleVisible: false,
       }}
     >
+      <Stack.Screen name="Drawer" component={Drawer} options={{ headerShown: false}}/>
+
+      
       <Stack.Screen name="RecoverPassword" component={RecoverPassword} options={{title: 'Recuperação de senha', headerTitleStyle: {fontFamily: 'AveriaLibre-Regular', color: '#fff'}}}/>
       <Stack.Screen
         name="NewSurvey"
