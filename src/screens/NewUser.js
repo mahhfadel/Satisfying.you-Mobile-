@@ -1,13 +1,22 @@
-import { StyleSheet, Text, View, TouchableOpacity, ActivityIndicator, ScrollView, SafeAreaView } from 'react-native';
-import { useState, useEffect } from 'react';
-import CustomInput from '../components/CustomInput';
-import { useFonts } from 'expo-font';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ActivityIndicator,
+  ScrollView,
+  SafeAreaView,
+} from "react-native";
+import { useState, useEffect } from "react";
+import CustomInput from "../components/CustomInput";
+import CustomInputPassWord from "../components/CustonInputPassWord";
+import { useFonts } from "expo-font";
 
 export default function NewUser() {
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
-  const [senha2, setSenha2] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [senha2, setSenha2] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [fontsLoaded] = useFonts({
     "AveriaLibre-Regular": require("../assets/fonts/AveriaLibre-Regular.ttf"),
@@ -17,7 +26,7 @@ export default function NewUser() {
     if (senha && senha2 && senha === senha2) {
       setErrorMessage("O campo repetir senha difere da senha.");
     } else {
-      setErrorMessage('');
+      setErrorMessage("");
     }
   }, [senha, senha2]);
 
@@ -25,28 +34,40 @@ export default function NewUser() {
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setErrorMessage("E-mail inválido.");
+    } else {
+      setErrorMessage("");
+    }
+  };
+
   return (
     <ScrollView style={styles.container}>
       <SafeAreaView>
         <View style={styles.inputContainer}>
-          <CustomInput 
-            label="E-mail" 
-            value={email} 
-            onChangeText={(text) => setEmail(text)}
+          <CustomInput
+            label="E-mail"
+            value={email}
+            onChangeText={(text) => {
+              setEmail(text);
+              validateEmail(text);
+            }}
           />
-          <CustomInput 
-            label="Senha" 
-            value={senha} 
+          <CustomInputPassWord
+            label="Senha"
+            value={senha}
             onChangeText={(text) => setSenha(text)}
-            secureTextEntry={true} 
           />
-          <CustomInput 
-            label="Repetir senha" 
-            value={senha2} 
+          <CustomInputPassWord
+            label="Repetir senha"
+            value={senha2}
             onChangeText={(text) => setSenha2(text)}
-            secureTextEntry={true} 
           />
-          {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+          {errorMessage ? (
+            <Text style={styles.errorText}>{errorMessage}</Text>
+          ) : null}
 
           <TouchableOpacity style={styles.button}>
             <Text style={styles.text}>Cadastrar</Text>
@@ -59,30 +80,30 @@ export default function NewUser() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#573FBA',
+    backgroundColor: "#573FBA",
     flex: 1,
   },
   inputContainer: {
-    width: '60%',
-    margin: 'auto'
+    width: "60%",
+    margin: "auto",
   },
   button: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#37BD6D',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#37BD6D",
     padding: 8,
     marginTop: 10,
-    marginBottom: 20
+    marginBottom: 20,
   },
   text: {
-    fontFamily: 'AveriaLibre-Regular',
-    color: '#fff',
-    fontSize: 16
+    fontFamily: "AveriaLibre-Regular",
+    color: "#fff",
+    fontSize: 16,
   },
   errorText: {
     marginTop: 4,
-    color: '#FD7979',
+    color: "#FD7979",
     fontSize: 15,
-    fontFamily: 'AveriaLibre-Regular',
-  }
+    fontFamily: "AveriaLibre-Regular",
+  },
 });
