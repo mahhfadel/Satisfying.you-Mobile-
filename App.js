@@ -3,8 +3,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 
-import { useFonts } from 'expo-font';
+import { useFonts } from "expo-font";
 
+
+import Coleta from "./src/screens/Coleta";
 import NewSurvey from './src/screens/NewSurvey';
 import EditSurvey from './src/screens/EditSurvey';
 import RecoverPassword from './src/screens/RecoverPassword';
@@ -17,7 +19,7 @@ const Stack = createStackNavigator();
 
 export default function App() {
   const [fontsLoaded] = useFonts({
-    'AveriaLibre-Regular': require('./src/assets/fonts/AveriaLibre-Regular.ttf'),
+    "AveriaLibre-Regular": require("./src/assets/fonts/AveriaLibre-Regular.ttf"),
   });
 
   if (!fontsLoaded) {
@@ -25,6 +27,7 @@ export default function App() {
   }
 
   return (
+
   <SurveyProvider>
     <NavigationContainer>
       <Stack.Navigator
@@ -41,6 +44,7 @@ export default function App() {
           headerBackTitleVisible: false,
         }}
       >
+
         <Stack.Screen name="Home" component={Drawer} options={{ headerShown: false}}/>
 
         
@@ -56,12 +60,22 @@ export default function App() {
           options={{ title: 'Modificar Pesquisa', headerTitleStyle: { fontFamily: 'AveriaLibre-Regular', color: '#fff',}}}
         />
 
+        <Stack.Screen
+          name="Coleta"
+          component={Coleta}
+          options={{
+            title: "Coleta",
+            headerTitleStyle: {
+              fontFamily: "AveriaLibre-Regular",
+              color: "#fff",
+            },
+          }}
+        />
+
       </Stack.Navigator>
     </NavigationContainer>
   </SurveyProvider>
 );
-
 }
 
-const styles = StyleSheet.create({
-});
+const styles = StyleSheet.create({});

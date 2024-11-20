@@ -1,3 +1,4 @@
+
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useContext } from 'react'
 
@@ -14,7 +15,7 @@ export default function NewSurvey({ navigation }) {
   const [name, onChangeName] = React.useState('');
   const [nameError, setNameError] = React.useState(false);
 
-  const [date, onChangeDate] = React.useState('');
+  const [date, onChangeDate] = React.useState("");
   const [dateError, setDateError] = React.useState(false);
   const [dateErrorMessage, setDateErrorMessage] = React.useState('Preencha a data');
 
@@ -96,9 +97,9 @@ const styles = StyleSheet.create({
     margin: 'auto'
   },
   button: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#37BD6D',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#37BD6D",
     padding: 8,
     marginTop: 8
   },
