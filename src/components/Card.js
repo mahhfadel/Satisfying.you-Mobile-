@@ -11,7 +11,7 @@ const Card = ({ id, title, date, uri }) => {
       <TouchableOpacity
         style={styles.container}
         onPress={() =>
-          navigation.navigate('EditSurvey', {
+          navigation.navigate('SurveyActions', {
             id,
             pTitle: title,
             pDate: date,

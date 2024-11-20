@@ -1,7 +1,7 @@
 
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DarkTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 
@@ -11,6 +11,8 @@ import { useFonts } from "expo-font";
 import Coleta from "./src/screens/Coleta";
 import NewSurvey from './src/screens/NewSurvey';
 import EditSurvey from './src/screens/EditSurvey';
+import SurveyActions from './src/screens/SurveyActions';
+import Report from './src/screens/Report';
 import RecoverPassword from './src/screens/RecoverPassword';
 import Drawer from './src/screens/Drawer';
 
@@ -31,7 +33,7 @@ export default function App() {
   return (
 
   <SurveyProvider>
-    <NavigationContainer>
+    <NavigationContainer theme={DarkTheme}>
       <Stack.Navigator
         screenOptions={{
           headerStyle: {
@@ -44,6 +46,8 @@ export default function App() {
             fontWeight: 'bold',
           },
           headerBackTitleVisible: false,
+          animationEnabled: true,
+          cardStyle: { backgroundColor: '#372775' }
         }}
       >
 

@@ -1,17 +1,19 @@
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
 import React from 'react'
 
-export default function SurveyActions(props) {
+export default function SurveyActions({ route, navigation }) {
+  const { id, pTitle, pDate, pUri } = route.params || {};
+
   const handleClickModify = () => {
-    props.navigation.navigate('Report')
+    navigation.navigate('EditSurvey', { id, pTitle, pDate, pUri });
   }
 
   const handleClickCollectData = () => {
-    props.navigation.navigate('Report')
+    navigation.navigate('Coleta')
   }
 
   const handleClickReport = () => {
-    props.navigation.navigate('Report')
+    navigation.navigate('Report')
   }
 
 
