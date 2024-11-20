@@ -10,7 +10,7 @@ const CustomInput = (props) => {
     const currentDate = selectedDate || date;
     setShow(false);
     setDate(currentDate);
-    // Chama a função onChangeText se estiver definido
+    
     if (props.onChangeText) {
       props.onChangeText(currentDate.toLocaleDateString());
     }
@@ -40,7 +40,7 @@ const CustomInput = (props) => {
           onChange={onChange}
         />
       )}
-      {props.err && <Text style={styles.errorText}>{props.errorMessage}</Text>}
+      <Text style={props.err ? styles.errorText : styles.dontShowError} >{props.errorMessage}</Text>
     </View>
   );
 };
@@ -49,7 +49,7 @@ export default CustomInput;
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 8,
+    marginTop: 2,
   },
   label: {
     color: '#ffffff',
@@ -81,9 +81,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   errorText: {
-    marginTop: 4,
     color: '#FF6347',
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: 'AveriaLibre-Regular',
   },
+  dontShowError: {
+    opacity: 0,
+    fontSize: 12,
+  }
 });
