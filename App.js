@@ -1,3 +1,5 @@
+
+import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -59,6 +61,18 @@ export default function App() {
           component={EditSurvey}
           options={{ title: 'Modificar Pesquisa', headerTitleStyle: { fontFamily: 'AveriaLibre-Regular', color: '#fff',}}}
         />
+
+        <Stack.Screen
+                name="SurveyActions"
+                component={SurveyActions}
+                options={{ title: 'Carnaval', headerTitleStyle: { fontFamily: 'AveriaLibre-Regular', color: '#fff',}}}
+      />
+      
+      <Stack.Screen
+        name="Report"
+        component={Report}
+        options={{ title: 'Relatório', headerTitleStyle: { fontFamily: 'AveriaLibre-Regular', color: '#fff',}}}
+      />
 
         <Stack.Screen
           name="Coleta"
