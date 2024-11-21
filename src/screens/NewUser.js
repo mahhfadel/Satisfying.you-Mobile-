@@ -11,7 +11,7 @@ import { useState, useEffect } from "react";
 import CustomInput from "../components/CustomInput";
 import CustomInputPassWord from "../components/CustonInputPassWord";
 import { useFonts } from "expo-font";
-
+//aaaaaa
 export default function NewUser() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
