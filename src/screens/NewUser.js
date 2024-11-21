@@ -11,35 +11,51 @@ import { useState, useEffect } from "react";
 import CustomInput from "../components/CustomInput";
 import CustomInputPassWord from "../components/CustonInputPassWord";
 import { useFonts } from "expo-font";
+import { useNavigation } from "@react-navigation/native";
 
 export default function NewUser() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [senha2, setSenha2] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessageEmail, setErrorMessageEmail] = useState("");
+  const [errorMessageSenha, setErrorMessageSenha] = useState("");
+  const navigation = useNavigation();
 
   const [fontsLoaded] = useFonts({
     "AveriaLibre-Regular": require("../assets/fonts/AveriaLibre-Regular.ttf"),
   });
 
-  useEffect(() => {
-    if (senha && senha2 && senha === senha2) {
-      setErrorMessage("O campo repetir senha difere da senha.");
-    } else {
-      setErrorMessage("");
-    }
-  }, [senha, senha2]);
-
   if (!fontsLoaded) {
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
 
-  const validateEmail = (email) => {
+  const validadeSenha = (senhaV, senha2V) => {
+    if (!senhaV || !senha2V) {
+      setErrorMessageSenha("Ambos os campos de senha devem ser preenchidos.");
+      return false;
+    }
+    if (senhaV !== senha2V) {
+      setErrorMessageSenha("As senhas não coincidem.");
+      return false;
+    }
+    setErrorMessageSenha("");
+    return true;
+  };
+
+  const validateEmail = (emailV) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setErrorMessage("E-mail inválido.");
+    if (!emailRegex.test(emailV)) {
+      setErrorMessageEmail("E-mail inválido.");
+      return false;
     } else {
-      setErrorMessage("");
+      setErrorMessageEmail("");
+      return true;
+    }
+  };
+
+  const criarUsuario = (senhaV, senha2V, emailV) => {
+    if (validadeSenha(senhaV, senha2V) && validateEmail(emailV)) {
+      navigation.navigate("Login");
     }
   };
 
@@ -55,21 +71,31 @@ export default function NewUser() {
               validateEmail(text);
             }}
           />
+          {errorMessageEmail ? (
+            <Text style={styles.errorText}>{errorMessageEmail}</Text>
+          ) : null}
           <CustomInputPassWord
             label="Senha"
             value={senha}
-            onChangeText={(text) => setSenha(text)}
+            onChangeText={(text1) => {
+              setSenha(text1);
+            }}
           />
           <CustomInputPassWord
             label="Repetir senha"
             value={senha2}
-            onChangeText={(text) => setSenha2(text)}
+            onChangeText={(text2) => {
+              setSenha2(text2);
+            }}
           />
-          {errorMessage ? (
-            <Text style={styles.errorText}>{errorMessage}</Text>
+          {errorMessageSenha ? (
+            <Text style={styles.errorText}>{errorMessageSenha}</Text>
           ) : null}
 
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => criarUsuario(senha, senha2, email)}
+          >
             <Text style={styles.text}>Cadastrar</Text>
           </TouchableOpacity>
         </View>

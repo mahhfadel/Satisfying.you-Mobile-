@@ -34,8 +34,16 @@ export default function Login() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setEmailError("E-mail inválido.");
+      return false;
     } else {
       setEmailError("");
+      return true;
+    }
+  };
+
+  const handleClick = (email, senha) => {
+    if (validateEmail(email) && senha != "") {
+      navigation.navigate("Home");
     }
   };
 
@@ -71,7 +79,7 @@ export default function Login() {
 
           <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate("Home")}
+            onPress={() => handleClick(email)}
           >
             <Text style={styles.text}>Entrar</Text>
           </TouchableOpacity>

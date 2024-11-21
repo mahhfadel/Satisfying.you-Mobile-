@@ -30,6 +30,7 @@ export default function NewSurvey({ navigation }) {
   const handleClick = () => {
     if (name === "") {
       setNameError(true);
+      return;
     } else {
       setNameError(false);
     }
@@ -37,6 +38,7 @@ export default function NewSurvey({ navigation }) {
     if (date === "") {
       setDateErrorMessage("Preencha a data");
       setDateError(true);
+      return;
     } else {
       setDateError(false);
     }
