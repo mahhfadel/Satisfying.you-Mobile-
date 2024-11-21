@@ -54,7 +54,13 @@ export default function App() {
           <Stack.Screen
             name="Coleta"
             component={Coleta}
-            options={{ headerShown: false }}
+            Options={{
+              title: "Coleta",
+              headerTitleStyle: {
+                fontFamily: "AveriaLibre-Regular",
+                color: "#fff",
+              },
+            }}
           />
 
           <Stack.Screen
@@ -115,7 +121,7 @@ export default function App() {
             name="Report"
             component={Report}
             options={{
-              title: "Nova Pesquisa",
+              title: "Dados pesquisa",
               headerTitleStyle: {
                 fontFamily: "AveriaLibre-Regular",
                 color: "#fff",
