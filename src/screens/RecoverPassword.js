@@ -3,12 +3,12 @@ import React from 'react'
 import CustomInput from '../components/CustomInput'
 import { useEffect } from 'react';
 
-const RecoverPassword = () => {
+const RecoverPassword = ({ navigation }) => {
   const [email, onChangeEmail] = React.useState('');
   const [emailError, setEmailError] = React.useState(false);
 
   const handleClick = () => { 
-
+    navigation.navigate('Login');
   }
 
   useEffect(() => {
