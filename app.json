@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "satisfying.you",
-    "slug": "satisfying.you",
+    "name": "satisfyingyou",
+    "slug": "satisfyingyou",
     "version": "1.0.0",
     "orientation": "landscape",
     "icon": "./src/assets/icon.png",
@@ -13,17 +13,37 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
+      "bundleIdentifier": "com.utfpr.satisfayingyou",
+      "buildNumber": "1",
+      "googleServicesFile": "./GoogleService-Info.plist",
       "supportsTablet": true
     },
     "android": {
+      "package": "com.utfpr.satisfayingyou",
+      "versionCode": 1,
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./src/assets/favicon.png"
     },
-    "plugins": ["expo-font"]
+    "plugins": [
+      "expo-font",
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth",
+      "@react-native-firebase/perf",
+      "@react-native-firebase/crashlytics",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ]
+    ]
   }
 }

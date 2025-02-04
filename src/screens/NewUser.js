@@ -11,8 +11,12 @@ import { useState, useEffect } from "react";
 import CustomInput from "../components/CustomInput";
 import CustomInputPassWord from "../components/CustonInputPassWord";
 import { useFonts } from "expo-font";
+<<<<<<< HEAD
 import { useNavigation } from "@react-navigation/native";
 
+=======
+//aaaaaa
+>>>>>>> 3fca49c94cea42ebbadeef321c1b7f8ede3d7b26
 export default function NewUser() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");

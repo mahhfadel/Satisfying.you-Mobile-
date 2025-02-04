@@ -18,7 +18,9 @@ function CustomDrawerContent({ navigation }) {
       <View>
         <Text style={styles.userMail}>usuario@dominio.com</Text>
         <View style={styles.hr}></View>
-        <View style={styles.iconContainer}>
+        <TouchableOpacity 
+          style={styles.iconContainer}
+          onPress={() => navigation.navigate('Home')}>
           <Ionicons
             name="document-text-outline"
             size={24}
@@ -26,10 +28,10 @@ function CustomDrawerContent({ navigation }) {
             style={{ marginLeft: 15 }}
           />
           <Text style={styles.iconText}>Pesquisas</Text>
-        </View>
+        </TouchableOpacity>
       </View>
 
-      <View
+      <TouchableOpacity
         style={styles.iconContainer}
         onPress={() => navigation.navigate("Login")}
       >
@@ -40,7 +42,7 @@ function CustomDrawerContent({ navigation }) {
           style={{ marginLeft: 15 }}
         />
         <Text style={styles.iconText}>Sair</Text>
-      </View>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
