@@ -1,5 +1,9 @@
 {
   "expo": {
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "name": "satisfyingyou",
     "slug": "satisfyingyou",
     "version": "1.0.0",
@@ -44,6 +48,11 @@
           }
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "b770399d-5cd7-4d83-9bcb-93044db97633"
+      }
+    }
   }
 }
