@@ -16,7 +16,10 @@ import ImagePickerInput from "../components/ImagePickerInput";
 import Modal from "react-native-modal";
 import { SurveyContext } from "../context/SurveyContext";
 
-export default function NewSurvey({ route, navigation }) {
+import { doc, updateDoc, deleteDoc } from "firebase/firestore";
+import { db } from "../firebase/firebaseConfig";
+
+export default function EditSurvey({ route, navigation }) {
   const [isModalVisible, setModalVisible] = useState(false);
 
   const { surveys, setSurveys } = useContext(SurveyContext);
@@ -36,41 +39,61 @@ export default function NewSurvey({ route, navigation }) {
 
   const [imageUri, setImageUri] = React.useState(pUri);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (name === "") {
       setNameError(true);
     } else {
       setNameError(false);
     }
-  
+
     if (date === "") {
       setDateErrorMessage("Preencha a data");
       setDateError(true);
     } else {
       setDateError(false);
     }
-  
+
     if (nameError || dateError) {
       return;
     }
-  
-    setSurveys((prevSurveys) => 
-      prevSurveys.map((survey) =>
-        survey.id === id ? { ...survey, title: name, date, uri: imageUri } : survey
-      )
-    );
-  
-    navigation.goBack();
+
+    try {
+      const surveyDocRef = doc(db, "surveys", id);
+
+      await updateDoc(surveyDocRef, {
+        title: name,
+        date,
+        uri: imageUri,
+      });
+
+      setSurveys((prevSurveys) =>
+        prevSurveys.map((survey) =>
+          survey.id === id
+            ? { ...survey, title: name, date, uri: imageUri }
+            : survey
+        )
+      );
+
+      navigation.goBack();
+    } catch (error) {
+      console.error("Erro ao salvar a pesquisa:", error);
+    }
   };
 
-  const deleteSurvey = () => {
-    setSurveys((prevSurveys) => 
-      prevSurveys.filter(s => s.id !== id)
-    );
-  
-    navigation.goBack();
-  }
-  
+  const deleteSurvey = async () => {
+    try {
+      const surveyDocRef = doc(db, "surveys", id);
+      await deleteDoc(surveyDocRef);
+
+      setSurveys((prevSurveys) =>
+        prevSurveys.filter((survey) => survey.id !== id)
+      );
+
+      navigation.goBack();
+    } catch (error) {
+      console.error("Erro ao excluir a pesquisa:", error);
+    }
+  };
 
   useEffect(() => {
     if (name !== "") {
@@ -103,7 +126,6 @@ export default function NewSurvey({ route, navigation }) {
       setDateError(false);
     }
   }, [date]);
-  
 
   return (
     <View style={styles.container}>
@@ -146,7 +168,10 @@ export default function NewSurvey({ route, navigation }) {
             <View style={styles.buttonRow}>
               <TouchableOpacity
                 style={[styles.modalButton, styles.removeButton]}
-                onPress={() => { toggleModal(); deleteSurvey(); }}
+                onPress={() => {
+                  toggleModal();
+                  deleteSurvey();
+                }}
               >
                 <Text style={styles.modalButtonText}>Sim</Text>
               </TouchableOpacity>

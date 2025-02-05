@@ -14,8 +14,8 @@ import { ScrollView } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import { SurveyContext } from "../context/SurveyContext";
 
-import { storage } from '../firebase/firebaseConfig';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { addDoc, collection } from "firebase/firestore";
+import { db } from '../firebase/firebaseConfig';
 
 export default function NewSurvey({ navigation }) {
   const { surveys, setSurveys } = useContext(SurveyContext);
@@ -30,7 +30,7 @@ export default function NewSurvey({ navigation }) {
 
   const [imageUri, setImageUri] = React.useState(null);
 
-  const handleClick = () => {
+  const handleClick = async () => {
     if (name === "") {
       setNameError(true);
     } else {
@@ -48,14 +48,32 @@ export default function NewSurvey({ navigation }) {
       return;
     }
 
-    const id = surveys[surveys.length - 1].id + 1;
+    const surveyData = {
+      title: name,
+      date,
+      uri: imageUri,
+      votes: {
+        neutral: 0,
+        poor: 0,
+        bad: 0,
+        good: 0,
+        excellent: 0
+      }
+    };
 
-    setSurveys((prevSurveys) => [
-      ...prevSurveys,
-      { id, title: name, date, uri: imageUri },
-    ]);
+    try {
+      const docRef = await addDoc(collection(db, "surveys"), surveyData);
+      console.log("Pesquisa registrada com sucesso:", docRef.id);
 
-    navigation.navigate("Home");
+      setSurveys((prevSurveys) => [
+        ...prevSurveys,
+        { id: docRef.id, ...surveyData },
+      ]);
+
+      navigation.navigate("Home");
+    } catch (error) {
+      console.error("Erro ao registrar pesquisa:", error);
+    }
   };
 
   useEffect(() => {

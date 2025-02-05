@@ -1,73 +1,108 @@
 import { SafeAreaView, StyleSheet, Text, Image, View } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { SurveyContext } from "../context/SurveyContext";
+import { db } from "../firebase/firebaseConfig";
+import { doc, getDoc, updateDoc, increment } from "firebase/firestore"; 
 
-export default function Coleta() {
-  const [showMessage, setShowMessage] = useState(false); // Estado para controlar a exibição da mensagem
+export default function Coleta({ route }) {
+  const [showMessage, setShowMessage] = useState(false);
+  const { surveys, setSurveys } = useContext(SurveyContext); 
 
-  // Função chamada ao clicar em uma opção de voto
-  const handleVote = (vote) => {
+  
+  const { id } = route.params || {};
+
+  const handleVote = async (vote) => {
     setShowMessage(true);
 
-    // Depois de 3 segundos, esconder a mensagem
     setTimeout(() => {
       setShowMessage(false);
     }, 3000);
+
+    const surveyDocRef = doc(db, "surveys", id);
+    const surveyDoc = await getDoc(surveyDocRef);
+
+    if (!surveyDoc.exists()) {
+      console.log("Documento não encontrado!");
+      return; 
+    }
+
+    try {
+      await updateDoc(surveyDocRef, {
+        [`votes.${vote}`]: increment(1),
+      });
+
+      setSurveys((prevSurveys) =>
+        prevSurveys.map((survey) =>
+          survey.id === id
+            ? {
+                ...survey,
+                votes: {
+                  ...survey.votes,
+                  [vote]: survey.votes[vote] + 1, 
+                },
+              }
+            : survey
+        )
+      );
+    } catch (error) {
+      console.error("Erro ao atualizar o voto:", error);
+    }
   };
 
   return (
     <View style={styles.container}>
       <SafeAreaView>
-        <Text style={styles.text}>O que você achou do carnaval 2024?</Text>
+        <Text style={styles.text}>What did you think of Carnival 2024?</Text>
 
         {showMessage && (
           <View style={styles.messageContainer}>
             <Text style={styles.messageText}>
-              Obrigada por participar da pesquisa!{"\n"}
+              Thank you for participating in the survey!{"\n"}
               {"\n"}
-              Aguardamos você no proximo ano!
+              See you next year!
             </Text>
           </View>
         )}
 
         <View style={styles.containerVotacao}>
-          <View style={styles.votar} onTouchEnd={() => handleVote("Péssimo")}>
+          <View style={styles.votar} onTouchEnd={() => handleVote("poor")}>
             <Image
               source={require("../assets/icons/pessimo.png")}
               style={styles.image}
             />
-            <Text style={styles.textVotar}>Péssimo</Text>
+            <Text style={styles.textVotar}>Poor</Text>
           </View>
 
-          <View style={styles.votar} onTouchEnd={() => handleVote("Ruim")}>
+          <View style={styles.votar} onTouchEnd={() => handleVote("bad")}>
             <Image
               source={require("../assets/icons/ruim.png")}
               style={styles.image}
             />
-            <Text style={styles.textVotar}>Ruim</Text>
+            <Text style={styles.textVotar}>Bad</Text>
           </View>
 
-          <View style={styles.votar} onTouchEnd={() => handleVote("Neutro")}>
+          <View style={styles.votar} onTouchEnd={() => handleVote("neutral")}>
             <Image
               source={require("../assets/icons/neutro.png")}
               style={styles.image}
             />
-            <Text style={styles.textVotar}>Neutro</Text>
+            <Text style={styles.textVotar}>Neutral</Text>
           </View>
 
-          <View style={styles.votar} onTouchEnd={() => handleVote("Bom")}>
+          <View style={styles.votar} onTouchEnd={() => handleVote("good")}>
             <Image
               source={require("../assets/icons/bom.png")}
               style={styles.image}
             />
-            <Text style={styles.textVotar}>Bom</Text>
+            <Text style={styles.textVotar}>Good</Text>
           </View>
 
-          <View style={styles.votar} onTouchEnd={() => handleVote("Excelente")}>
+          <View style={styles.votar} onTouchEnd={() => handleVote("excellent")}>
             <Image
               source={require("../assets/icons/excelente.png")}
               style={styles.image}
             />
-            <Text style={styles.textVotar}>Excelente</Text>
+            <Text style={styles.textVotar}>Excellent</Text>
           </View>
         </View>
       </SafeAreaView>

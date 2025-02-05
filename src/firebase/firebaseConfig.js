@@ -22,8 +22,6 @@ const auth_mod = initializeAuth(app, {
 
 const db = getFirestore(app);
 
-// Inicializando o Firebase Storage
 const storage = getStorage(app);
 
-// Exportando as instâncias
 export { auth_mod, db, storage };

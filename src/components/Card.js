@@ -4,7 +4,7 @@ import React from "react";
 
 import { vw, vh } from "react-native-expo-viewport-units";
 
-const Card = ({ id, title, date, uri }) => {
+const Card = ({ id, title, date, uri, votes }) => {
   const navigation = useNavigation();
 
   return (
@@ -16,6 +16,7 @@ const Card = ({ id, title, date, uri }) => {
           pTitle: title,
           pDate: date,
           pUri: uri,
+          pVotes: votes
         })
       }
     >

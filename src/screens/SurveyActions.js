@@ -2,18 +2,18 @@ import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View, Image } from 'r
 import React from 'react'
 
 export default function SurveyActions({ route, navigation }) {
-  const { id, pTitle, pDate, pUri } = route.params || {};
+  const { id, pTitle, pDate, pUri, pVotes} = route.params || {};
 
   const handleClickModify = () => {
     navigation.navigate('EditSurvey', { id, pTitle, pDate, pUri });
   }
 
   const handleClickCollectData = () => {
-    navigation.navigate('Coleta')
+    navigation.navigate('Coleta', { id })
   }
 
   const handleClickReport = () => {
-    navigation.navigate('Report')
+    navigation.navigate('Report', { id, pVotes})
   }
 
 
