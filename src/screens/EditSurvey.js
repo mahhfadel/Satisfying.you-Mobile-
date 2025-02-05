@@ -5,39 +5,82 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Alert,
+  Image,
 } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 
 import AntDesign from "@expo/vector-icons/AntDesign";
-
 import CustomInput from "../components/CustomInput";
-import ImagePickerInput from "../components/ImagePickerInput";
-
 import Modal from "react-native-modal";
 import { SurveyContext } from "../context/SurveyContext";
 
 import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
 
+import ImagePicker from "react-native-image-picker";
+import ImageResizer from "react-native-image-resizer";
+
 export default function EditSurvey({ route, navigation }) {
   const [isModalVisible, setModalVisible] = useState(false);
-
   const { surveys, setSurveys } = useContext(SurveyContext);
 
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
-  };
+  const toggleModal = () => setModalVisible(!isModalVisible);
 
   const { id, pTitle, pDate, pUri } = route.params || {};
 
-  const [name, onChangeName] = React.useState(pTitle);
-  const [nameError, setNameError] = React.useState(false);
+  const [name, onChangeName] = useState(pTitle);
+  const [nameError, setNameError] = useState(false);
 
-  const [date, onChangeDate] = React.useState(pDate);
-  const [dateError, setDateError] = React.useState(false);
-  const [dateErrorMessage, setDateErrorMessage] = React.useState(false);
+  const [date, onChangeDate] = useState(pDate);
+  const [dateError, setDateError] = useState(false);
+  const [dateErrorMessage, setDateErrorMessage] = useState(false);
 
-  const [imageUri, setImageUri] = React.useState(pUri);
+  const [imageBase64, setImageBase64] = useState(pUri);
+
+  // Função para selecionar e processar imagem
+  const selecionarImagem = () => {
+    const options = {
+      mediaType: "photo",
+      quality: 1,
+      includeBase64: true,
+    };
+
+    ImagePicker.launchImageLibrary(options, (response) => {
+      if (response.didCancel) {
+        console.log("Usuário cancelou a seleção da imagem.");
+      } else if (response.error) {
+        console.log("Erro ao selecionar imagem:", response.error);
+      } else {
+        processarImagem(response.assets[0].uri);
+      }
+    });
+  };
+
+  const processarImagem = async (uri) => {
+    try {
+      const resizedImage = await ImageResizer.createResizedImage(
+        uri,
+        800,
+        600,
+        "JPEG",
+        80
+      );
+      const response = await fetch(resizedImage.uri);
+      const blob = await response.blob();
+
+      // Convertendo blob para Base64
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onloadend = () => {
+        const base64data = reader.result.split(",")[1]; // Removendo "data:image/jpeg;base64,"
+        setImageBase64(base64data);
+      };
+    } catch (error) {
+      console.log("Erro ao processar imagem:", error);
+      Alert.alert("Erro", "Falha ao processar a imagem.");
+    }
+  };
 
   const handleSave = async () => {
     if (name === "") {
@@ -63,13 +106,13 @@ export default function EditSurvey({ route, navigation }) {
       await updateDoc(surveyDocRef, {
         title: name,
         date,
-        uri: imageUri,
+        imagem: imageBase64, // Atualiza a imagem no Firebase
       });
 
       setSurveys((prevSurveys) =>
         prevSurveys.map((survey) =>
           survey.id === id
-            ? { ...survey, title: name, date, uri: imageUri }
+            ? { ...survey, title: name, date, imagem: imageBase64 }
             : survey
         )
       );
@@ -96,9 +139,7 @@ export default function EditSurvey({ route, navigation }) {
   };
 
   useEffect(() => {
-    if (name !== "") {
-      setNameError(false);
-    }
+    if (name !== "") setNameError(false);
   }, [name]);
 
   useEffect(() => {
@@ -111,18 +152,6 @@ export default function EditSurvey({ route, navigation }) {
         return;
       }
 
-      setDateError(false);
-    }
-  }, [date]);
-
-  useEffect(() => {
-    if (name !== "") {
-      setNameError(false);
-    }
-  }, [name]);
-
-  useEffect(() => {
-    if (date !== "") {
       setDateError(false);
     }
   }, [date]);
@@ -147,11 +176,23 @@ export default function EditSurvey({ route, navigation }) {
               showDatePicker={true}
               errorMessage="Preencha a data"
             />
-            <ImagePickerInput
-              label="Imagem"
-              image={imageUri}
-              setImage={setImageUri}
-            />
+
+            {/* Botão para selecionar a imagem */}
+            <TouchableOpacity
+              style={styles.imagePickerButton}
+              onPress={selecionarImagem}
+            >
+              <Text style={styles.imagePickerText}>Selecionar Imagem</Text>
+            </TouchableOpacity>
+
+            {/* Mostrar a imagem selecionada */}
+            {imageBase64 && (
+              <Image
+                source={{ uri: `data:image/jpeg;base64,${imageBase64}` }}
+                style={styles.previewImage}
+              />
+            )}
+
             <TouchableOpacity style={styles.button} onPress={handleSave}>
               <Text style={styles.text}>Salvar</Text>
             </TouchableOpacity>
@@ -185,10 +226,6 @@ export default function EditSurvey({ route, navigation }) {
           </View>
         </View>
       </Modal>
-      <TouchableOpacity style={styles.deleteButton} onPress={toggleModal}>
-        <AntDesign name="delete" size={24} color="white" />
-        <Text style={styles.textButton}>Apagar</Text>
-      </TouchableOpacity>
     </View>
   );
 }
@@ -197,7 +234,6 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#573FBA",
     flex: 1,
-    position: "relative",
   },
   inputContainer: {
     width: "60%",
@@ -212,69 +248,24 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   text: {
-    fontFamily: "AveriaLibre-Regular",
-    color: "#fff",
     fontSize: 16,
-    textTransform: "uppercase",
-  },
-  deleteButton: {
-    position: "absolute",
-    right: "2.5%",
-    bottom: "2%",
-
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 3,
-  },
-  textButton: {
-    fontFamily: "AveriaLibre-Regular",
-    color: "#fff",
-    fontSize: 16,
-  },
-  modalContent: {
-    backgroundColor: "#2B1F5C",
-    padding: 20,
-    borderRadius: 10,
-    maxHeight: "80%",
-    maxWidth: "40%",
-    margin: "auto",
-  },
-  message: {
-    fontSize: 16,
-    fontFamily: "AveriaLibre-Regular",
-    marginBottom: 10,
-    color: "#fff",
-    textAlign: "center",
-  },
-  buttonContainer: {
-    marginTop: 16,
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "center",
-    height: 32,
-  },
-  modalButton: {
-    backgroundColor: "#fff",
-    padding: 8,
-    height: 32,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "50%",
-  },
-  modalButtonText: {
-    fontFamily: "AveriaLibre-Regular",
     color: "#fff",
     textTransform: "uppercase",
   },
-  actionButton: { backgroundColor: "#3F92C5" },
-  removeButton: { backgroundColor: "#FF8383" },
-  buttonRow: {
-    flexDirection: "row",
-    gap: 4,
-    justifyContent: "center",
+  imagePickerButton: {
+    backgroundColor: "#007AFF",
+    padding: 10,
+    marginTop: 10,
     alignItems: "center",
+  },
+  imagePickerText: {
+    color: "#fff",
+    fontSize: 16,
+  },
+  previewImage: {
+    width: 200,
+    height: 200,
+    marginTop: 10,
+    alignSelf: "center",
   },
 });

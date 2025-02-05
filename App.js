@@ -5,7 +5,7 @@ import { ActivityIndicator, StyleSheet, TouchableOpacity } from "react-native";
 
 import { useFonts } from "expo-font";
 
-import { firebase } from './src/firebase/firebaseConfig';
+import { firebase } from "./src/firebase/firebaseConfig";
 
 import Login from "./src/screens/Login";
 import Coleta from "./src/screens/Coleta";
@@ -17,7 +17,7 @@ import RecoverPassword from "./src/screens/RecoverPassword";
 import Report from "./src/screens/Report";
 import SurveyAction from "./src/screens/SurveyActions";
 
-import { AuthProvider } from './src/context/AuthContext';
+import { AuthProvider } from "./src/context/AuthContext";
 
 import { SurveyProvider } from "./src/context/SurveyContext";
 
@@ -63,7 +63,7 @@ export default function App() {
             />
 
             <Stack.Screen
-              name="EditSurvey"
+              name="Editar Pesquisa"
               component={EditSurvey}
               Options={{
                 title: "Modificar Pesquisa",
@@ -143,7 +143,6 @@ export default function App() {
         </NavigationContainer>
       </SurveyProvider>
     </AuthProvider>
-    
   );
 }
 
