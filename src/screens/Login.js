@@ -1,9 +1,9 @@
+// src/screens/Login.js
 import {
   StyleSheet,
   Text,
   View,
   TouchableOpacity,
-  ActivityIndicator,
   ScrollView,
   SafeAreaView,
 } from "react-native";
@@ -12,15 +12,20 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import AppLoading from "expo-app-loading";
-
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth_mod } from "../firebase/firebaseConfig";
 import CustomInput from "../components/CustomInput";
 import CustomInputPassWord from "../components/CustonInputPassWord";
+import { useAuth } from "../context/AuthContext";  // Importando o contexto de autenticação
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [senhaError, setSenhaError] = useState("");
   const navigation = useNavigation();
+
+  const { setUserCredentials } = useAuth();  // Acesso ao contexto para salvar o usuário
 
   const [fontsLoaded] = useFonts({
     "AveriaLibre-Regular": require("../assets/fonts/AveriaLibre-Regular.ttf"),
@@ -34,8 +39,33 @@ export default function Login() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setEmailError("E-mail inválido.");
+      return false;
     } else {
       setEmailError("");
+      return true;
+    }
+  };
+
+  const handleClick = async () => {
+    if (validateEmail(email) && senha !== "") {
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth_mod, email, senha);
+        const user = userCredential.user;
+        setUserCredentials(user);  // Atualiza o contexto com o usuário autenticado
+        navigation.navigate("Home");
+      } catch (error) {
+        if (error.code === "auth/user-not-found") {
+          setEmailError("Usuário não encontrado.");
+        } else if (error.code === "auth/wrong-password") {
+          setSenhaError("Senha incorreta.");
+        } else {
+          setEmailError("Houve um erro, tente novamente.");
+        }
+      }
+    } else {
+      if (senha === "") {
+        setSenhaError("Campo de senha é obrigatório.");
+      }
     }
   };
 
@@ -60,19 +90,16 @@ export default function Login() {
               validateEmail(text);
             }}
           />
+          {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+
           <CustomInputPassWord
             label="Senha"
             value={senha}
             onChangeText={setSenha}
           />
-          {emailError ? (
-            <Text style={styles.errorText}>{emailError}</Text>
-          ) : null}
+          {senhaError ? <Text style={styles.errorText}>{senhaError}</Text> : null}
 
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate("Home")}
-          >
+          <TouchableOpacity style={styles.button} onPress={handleClick}>
             <Text style={styles.text}>Entrar</Text>
           </TouchableOpacity>
           <TouchableOpacity

@@ -11,8 +11,13 @@ import { useState, useEffect } from "react";
 import CustomInput from "../components/CustomInput";
 import CustomInputPassWord from "../components/CustonInputPassWord";
 import { useFonts } from "expo-font";
-//aaaaaa
-export default function NewUser() {
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth_mod } from "../firebase/firebaseConfig";
+import { useAuth } from "../context/AuthContext"; 
+
+export default function NewUser({ navigation }) {
+  const { setUserCredentials } = useAuth(); 
+
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [senha2, setSenha2] = useState("");
@@ -23,7 +28,7 @@ export default function NewUser() {
   });
 
   useEffect(() => {
-    if (senha && senha2 && senha === senha2) {
+    if (senha && senha2 && senha !== senha2) {
       setErrorMessage("O campo repetir senha difere da senha.");
     } else {
       setErrorMessage("");
@@ -38,8 +43,40 @@ export default function NewUser() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setErrorMessage("E-mail inválido.");
+      return false;
     } else {
       setErrorMessage("");
+      return true;
+    }
+  };
+
+  const validadeSenha = (senha, senha2) => {
+    if (senha !== senha2) {
+      setErrorMessage("As senhas não coincidem.");
+      return false;
+    } else {
+      setErrorMessage("");
+      return true;
+    }
+  };
+
+  const criarUsuario = async () => {
+    if (validadeSenha(senha, senha2) && validateEmail(email)) {
+      try {
+        console.log("teste");
+        const userCredentials = await createUserWithEmailAndPassword(
+          auth_mod,
+          email,
+          senha
+        );
+
+        setUserCredentials(userCredentials);
+
+        navigation.navigate("Login");
+      } catch (error) {
+        console.error(error);
+        setErrorMessage("Houve um erro, tente novamente.");
+      }
     }
   };
 
@@ -69,7 +106,7 @@ export default function NewUser() {
             <Text style={styles.errorText}>{errorMessage}</Text>
           ) : null}
 
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={criarUsuario}>
             <Text style={styles.text}>Cadastrar</Text>
           </TouchableOpacity>
         </View>

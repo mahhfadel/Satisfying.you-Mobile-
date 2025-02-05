@@ -14,6 +14,9 @@ import { ScrollView } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
 import { SurveyContext } from "../context/SurveyContext";
 
+import { storage } from '../firebase/firebaseConfig';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+
 export default function NewSurvey({ navigation }) {
   const { surveys, setSurveys } = useContext(SurveyContext);
 

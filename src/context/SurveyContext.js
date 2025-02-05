@@ -1,17 +1,48 @@
-import React, { createContext, useState } from 'react';
+// src/context/SurveyContext.js
+
+import React, { createContext, useState, useContext } from 'react';
+import { db } from '../firebase/firebaseConfig'; 
+import { collection, getDocs } from 'firebase/firestore';
+import { useAuth } from './AuthContext';
 
 export const SurveyContext = createContext();
 
 export const SurveyProvider = ({ children }) => {
-    const [ surveys, setSurveys ] = useState([
-        { id: 1, title: 'SECOMP 2023', date: '10/10/2023', uri: 'https://static.vecteezy.com/system/resources/thumbnails/044/812/078/small/sleek-desktop-computer-icon-on-a-transparent-background-png.png'},
-        { id: 2, title: 'Ubuntu 2022', date: '05/06/2022', uri: 'https://mir-s3-cdn-cf.behance.net/project_modules/hd/dff60934335773.56cce1e574c01.png'},
-        { id: 3, title: 'Meninas CPU', date: '01/04/2022', uri: 'https://meninas.sbc.org.br/wp-content/uploads/2023/06/image-removebg-preview-20-2.png' }
-    ]);
+    const [surveys, setSurveys] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const { user } = useAuth();
+
+    const fetchSurveys = async () => {
+        if (!user) {
+            console.log('User is not logged in.');
+            setSurveys([]);
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const surveyCollectionRef = collection(db, 'surveys');
+            const surveySnapshot = await getDocs(surveyCollectionRef);
+            const surveyList = surveySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            setSurveys(surveyList);
+            console.log('Fetched surveys:', surveyList);
+        } catch (error) {
+            console.error('Error fetching surveys:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
-        <SurveyContext.Provider value={{ surveys, setSurveys }}>
+        <SurveyContext.Provider value={{ surveys, setSurveys, loading, fetchSurveys }}>
             {children}
         </SurveyContext.Provider>
-    )
-}
+    );
+};
+
+export const useSurvey = () => {
+    return useContext(SurveyContext);
+};

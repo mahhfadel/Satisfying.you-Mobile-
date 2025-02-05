@@ -1,29 +1,23 @@
-import {
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+// src/screens/Home.js
 
-import AntDesign from "@expo/vector-icons/AntDesign";
-import Card from "../components/Card";
-
-import { vw, vh } from "react-native-expo-viewport-units";
-import { SurveyContext } from "../context/SurveyContext";
+import React, { useState, useEffect, useContext } from 'react';
+import { SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import AntDesign from '@expo/vector-icons/AntDesign';
+import { vw, vh } from 'react-native-expo-viewport-units';
+import { SurveyContext } from '../context/SurveyContext';
+import Card from '../components/Card';
 
 const Home = ({ navigation }) => {
-  const [filter, setFilter] = useState("");
-
-  const { surveys, setSurveys } = useContext(SurveyContext);
-
+  const [filter, setFilter] = useState('');
+  const { surveys, fetchSurveys, loading } = useContext(SurveyContext);
   const [filteredSurveys, setFilteredSurveys] = useState(surveys);
 
   useEffect(() => {
-    if (filter === "") {
+    fetchSurveys();
+  }, []);
+
+  useEffect(() => {
+    if (filter === '') {
       setFilteredSurveys(surveys);
       return;
     }
@@ -55,12 +49,16 @@ const Home = ({ navigation }) => {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.carrousselContent}
         >
-          {surveys && filteredSurveys.map((s) => <Card {...s} key={s.id} />)}
+          {loading ? (
+            <Text>Loading...</Text>
+          ) : (
+            filteredSurveys.map((s) => <Card {...s} key={s.id} />)
+          )}
         </ScrollView>
       </View>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.navigate("NewSurvey")}
+        onPress={() => navigation.navigate('NewSurvey')}
       >
         <Text style={styles.text}>Nova pesquisa</Text>
       </TouchableOpacity>

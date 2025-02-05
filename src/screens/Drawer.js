@@ -1,23 +1,36 @@
 import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  SafeAreaView,
-} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from "react-native";
 import Home from "./Home";
+import { signOut } from 'firebase/auth';
+import { auth_mod } from '../firebase/firebaseConfig';
+import { useNavigation } from '@react-navigation/native'; 
+import { useAuth } from '../context/AuthContext';
 
 const Drawer = createDrawerNavigator();
 
-function CustomDrawerContent({ navigation }) {
+function CustomDrawerContent() {
+  const navigation = useNavigation();
+  const { user, logout } = useAuth(); 
+  
+  const handleLogout = async () => {
+    try {
+      await signOut(auth_mod); 
+      logout(); 
+      navigation.navigate("Login");
+    } catch (error) {
+      console.error("Erro ao fazer logout", error);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.drawerContent}>
       <View>
-        <Text style={styles.userMail}>usuario@dominio.com</Text>
+        {/* Exibindo e-mail do usuário */}
+        <Text style={styles.userMail}>{user ? user.email : "Usuário não logado"}</Text>
         <View style={styles.hr}></View>
+        
         <TouchableOpacity 
           style={styles.iconContainer}
           onPress={() => navigation.navigate('Home')}>
@@ -31,9 +44,10 @@ function CustomDrawerContent({ navigation }) {
         </TouchableOpacity>
       </View>
 
+      {/* Botão de Logout */}
       <TouchableOpacity
         style={styles.iconContainer}
-        onPress={() => navigation.navigate("Login")}
+        onPress={handleLogout}
       >
         <Ionicons
           name="exit-outline"
@@ -58,7 +72,7 @@ export default function DrawerNavigator() {
       }}
     >
       <Drawer.Screen
-        name="Home"
+        name="Inicial"
         component={Home}
         options={({ navigation }) => ({
           headerLeft: () => (
