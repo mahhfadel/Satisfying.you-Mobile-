@@ -63,7 +63,7 @@ export default function App() {
             />
 
             <Stack.Screen
-              name="Editar Pesquisa"
+              name="EditSurvey"
               component={EditSurvey}
               Options={{
                 title: "Modificar Pesquisa",
@@ -120,7 +120,7 @@ export default function App() {
               name="Report"
               component={Report}
               options={{
-                title: "Nova Pesquisa",
+                title: "Relatorio",
                 headerTitleStyle: {
                   fontFamily: "AveriaLibre-Regular",
                   color: "#fff",
